@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FileText, Eye, PenTool, Download, Search, Filter } from "lucide-react";
+import { FileText, Eye, PenTool, Download, Search, Filter, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import DashboardLayout from "@/components/DashboardLayout";
@@ -69,6 +69,20 @@ const HistoryPage = () => {
       toast.error(err?.message || "Failed to download PDF draft");
     } finally {
       setDownloadingId(null);
+    }
+  };
+
+  const handleDelete = async (documentId: string) => {
+    if (!confirm("Are you sure you want to delete this document draft?")) {
+      return;
+    }
+    try {
+      await draftService.delete(documentId);
+      toast.success("Document draft deleted successfully");
+      loadHistory();
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err?.message || "Failed to delete document draft");
     }
   };
 
@@ -156,21 +170,39 @@ const HistoryPage = () => {
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="flex items-center justify-end gap-1">
+                          <div className="flex items-center justify-end gap-2">
                             <Link to={`/editor/${item.id}`}>
-                              <Button variant="ghost" size="icon" className="h-8 w-8"><Eye className="h-3.5 w-3.5" /></Button>
+                              <Button variant="ghost" size="sm" className="h-8 gap-1" title="View">
+                                <Eye className="h-3.5 w-3.5" />
+                                <span>View</span>
+                              </Button>
                             </Link>
                             <Link to={`/editor/${item.id}`}>
-                              <Button variant="ghost" size="icon" className="h-8 w-8"><PenTool className="h-3.5 w-3.5" /></Button>
+                              <Button variant="ghost" size="sm" className="h-8 gap-1" title="Edit">
+                                <PenTool className="h-3.5 w-3.5" />
+                                <span>Edit</span>
+                              </Button>
                             </Link>
                             <Button 
                               variant="ghost" 
-                              size="icon" 
-                              className="h-8 w-8" 
+                              size="sm" 
+                              className="h-8 gap-1" 
                               disabled={downloadingId === item.id || !item.current_version_id}
                               onClick={() => handleDownload(item)}
+                              title="Download"
                             >
                               <Download className="h-3.5 w-3.5" />
+                              <span>Download</span>
+                            </Button>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="h-8 gap-1 text-destructive hover:text-destructive hover:bg-destructive/10" 
+                              onClick={() => handleDelete(item.id)}
+                              title="Delete"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                              <span>Delete</span>
                             </Button>
                           </div>
                         </td>

@@ -108,5 +108,9 @@ export const draftService = {
       method: "POST",
       body: { format, theme_template: themeTemplate },
     }),
+
+  delete: (documentId: string) =>
+    apiRequest<void>(`/documents/${documentId}`, { method: "DELETE" }),
 };
+
 export type Draft = DocumentResponse;

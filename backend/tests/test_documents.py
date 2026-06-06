@@ -90,3 +90,36 @@ def test_refine_endpoint(client: TestClient, auth_headers: dict):
     assert response.status_code == 200
     data = response.json()
     assert "refined_content" in data
+
+def test_delete_document(client: TestClient, auth_headers: dict):
+    # 1. Create Project
+    proj_response = client.post(
+        "/api/v1/projects/",
+        json={"name": "Delete Test Project", "description": "Testing document deletion"},
+        headers=auth_headers
+    )
+    assert proj_response.status_code == 201
+    project_id = proj_response.json()["id"]
+
+    # 2. Create Document
+    doc_response = client.post(
+        f"/api/v1/projects/{project_id}/documents",
+        json={"name": "Temporary Doc to Delete", "type": "CSR"},
+        headers=auth_headers
+    )
+    assert doc_response.status_code == 201
+    doc_id = doc_response.json()["id"]
+
+    # 3. Delete Document
+    delete_response = client.delete(
+        f"/api/v1/documents/{doc_id}",
+        headers=auth_headers
+    )
+    assert delete_response.status_code == 204
+
+    # 4. Try to fetch the deleted document
+    get_response = client.get(
+        f"/api/v1/documents/{doc_id}",
+        headers=auth_headers
+    )
+    assert get_response.status_code == 404
