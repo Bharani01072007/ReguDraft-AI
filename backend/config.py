@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     
     # API Gateway Configurations
     API_V1_STR: str = "/api/v1"
+    BACKEND_URL: str = os.getenv("BACKEND_URL", "http://localhost:8000")
     
     # Security Configuration
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "super_secret_signing_key_for_regudraft_ai_change_in_production")

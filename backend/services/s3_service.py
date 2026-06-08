@@ -22,7 +22,7 @@ class S3Service:
             shutil.copyfileobj(file_obj, f_out)
         
         # Return a simulated URL
-        return f"http://localhost:8000/static/storage/{object_name}"
+        return f"{settings.BACKEND_URL}/static/storage/{object_name}"
 
     def upload_bytes(self, data: bytes, object_name: str) -> str:
         """Uploads bytes to S3 or saves locally as a fallback"""
@@ -32,10 +32,10 @@ class S3Service:
         with open(target_path, "wb") as f_out:
             f_out.write(data)
             
-        return f"http://localhost:8000/static/storage/{object_name}"
+        return f"{settings.BACKEND_URL}/static/storage/{object_name}"
 
     def get_presigned_url(self, object_name: str) -> str:
         """Generates a simulated link to access the object"""
-        return f"http://localhost:8000/static/storage/{object_name}"
+        return f"{settings.BACKEND_URL}/static/storage/{object_name}"
 
 s3_service = S3Service()
