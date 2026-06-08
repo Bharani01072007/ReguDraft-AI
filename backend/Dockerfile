@@ -12,12 +12,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY . .
+# Copy application code into 'backend' folder
+COPY . ./backend
 
 # Create local storage folders and configure correct permissions
-RUN mkdir -p /app/storage_temp && chmod -R 777 /app/storage_temp
+RUN mkdir -p /app/backend/storage_temp && chmod -R 777 /app/backend/storage_temp
 
 EXPOSE 8000
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
